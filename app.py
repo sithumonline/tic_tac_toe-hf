@@ -93,9 +93,9 @@ def aiPlayer(squares: List[str]) -> int:
         param_3=512,
         api_name="/chat"
     )
-    print(result)
 
-    return 0
+    print(f"AI's move: {result}")
+    return int(result)
 
 
 def botPlayer(squares: List[str]) -> int:
@@ -147,7 +147,7 @@ def is_square_empty():
     return False
 
 
-def on_submit(number):
+def on_submit(number, chk):
     if not is_square_empty():
         reset_squares()
 
@@ -160,13 +160,20 @@ def on_submit(number):
         gr.Info("Move already made!")
         return boardTemplate.format(*squares)
 
-    bot_move = botPlayer(squares)
-    aiPlayer(squares)
-    if is_empty(squares, bot_move):
-        squares[bot_move] = " O "
-        if checkWin(False, squares):
-            gr.Info("You lose!")
-            return "<h3>You lose!</h3>"
+    if chk:
+        ai_move = aiPlayer(squares)
+        if is_empty(squares, ai_move):
+            squares[ai_move] = " O "
+            if checkWin(False, squares):
+                gr.Info("You lose!")
+                return "<h3>You lose!</h3>"
+    else:
+        bot_move = botPlayer(squares)
+        if is_empty(squares, bot_move):
+            squares[bot_move] = " O "
+            if checkWin(False, squares):
+                gr.Info("You lose!")
+                return "<h3>You lose!</h3>"
 
     if not is_square_empty():
         gr.Info("It's a tie!")
@@ -192,7 +199,11 @@ with (gr.Blocks(css=css) as demo):
                 maximum=8,
                 step=1,
             )
-            num.submit(on_submit, inputs=[num], outputs=[board])
+            chk = gr.Checkbox(
+                False,
+                label="AI Component",
+            )
+            num.submit(on_submit, inputs=[num, chk], outputs=[board])
 
     gr.Markdown(LICENSE)
 
