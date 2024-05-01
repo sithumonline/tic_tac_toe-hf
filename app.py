@@ -78,12 +78,15 @@ squares: List[str] = ["   " for i in range(9)]
 def aiPlayer(squares: List[str]) -> int:
     print("AI's turn")
     prompt = f""""
+    # Tic Tac Toe
+    
     The board is:
     
     {aiBoardTemplate.format(*squares)}
     
     It's your turn. Enter the number of the square you want to place your 'O' in.
-    Only enter the number of the square. For example, if you want to place your 'O' in the top right square, enter '2'.
+    Only enter the number of the square. For example, if you want to place your 'O' in the top right square,
+    no any text or spaces, just enter 2.
     """
 
     client = Client("ysharma/Chat_with_Meta_llama3_8b")
