@@ -1,5 +1,7 @@
 import gradio as gr
 from typing import List
+from gradio_client import Client
+
 
 DESCRIPTION = '''
 <div>
@@ -34,6 +36,18 @@ boardTemplate = """
 </center>
 """
 
+aiBoardTemplate = """"
+       0     1     2
+    +-----+-----+-----+
+    | {0} | {1} | {2} |
+    +-----+-----+-----+
+  3 | {3} | {4} | {5} | 5
+    +-----+-----+-----+
+    | {6} | {7} | {8} |
+    +-----+-----+-----+
+         6     7     8
+"""
+
 css = """
 table {
     border-collapse: collapse;
@@ -59,6 +73,29 @@ winConditions = [
 ]
 
 squares: List[str] = ["   " for i in range(9)]
+
+
+def aiPlayer(squares: List[str]) -> int:
+    print("AI's turn")
+    prompt = f""""
+    The board is:
+    
+    {aiBoardTemplate.format(*squares)}
+    
+    It's your turn. Enter the number of the square you want to place your 'O' in.
+    Only enter the number of the square. For example, if you want to place your 'O' in the top right square, enter '2'.
+    """
+
+    client = Client("ysharma/Chat_with_Meta_llama3_8b")
+    result = client.predict(
+        message=prompt,
+        request=0.95,
+        param_3=512,
+        api_name="/chat"
+    )
+    print(result)
+
+    return 0
 
 
 def botPlayer(squares: List[str]) -> int:
@@ -124,6 +161,7 @@ def on_submit(number):
         return boardTemplate.format(*squares)
 
     bot_move = botPlayer(squares)
+    aiPlayer(squares)
     if is_empty(squares, bot_move):
         squares[bot_move] = " O "
         if checkWin(False, squares):
