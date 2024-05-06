@@ -89,11 +89,9 @@ def aiPlayer(squares: List[str]) -> int:
     no any text or spaces, just enter 2.
     """
 
-    client = Client("ysharma/Chat_with_Meta_llama3_8b")
+    client = Client("sithumonline/llama-cpp-python-cpu-gradio")
     result = client.predict(
         message=prompt,
-        request=0.95,
-        param_3=512,
         api_name="/chat"
     )
 
